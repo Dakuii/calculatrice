@@ -1,44 +1,53 @@
 plugins {
-	id 'java'
-	id 'org.springframework.boot' version '3.3.4'
-	id 'io.spring.dependency-management' version '1.1.6'
-	id 'jacoco' 
+    id 'java'
+    id 'org.springframework.boot' version '3.3.4'
+    id 'io.spring.dependency-management' version '1.1.6'
+    id 'jacoco'
+    id 'checkstyle' // Add Checkstyle plugin
 }
 
 group = 'com.ali'
 version = '0.0.1-SNAPSHOT'
 
 java {
-	toolchain {
-		languageVersion = JavaLanguageVersion.of(17)
-	}
+    toolchain {
+        languageVersion = JavaLanguageVersion.of(17)
+    }
 }
 
 repositories {
-	mavenCentral()
+    mavenCentral()
 }
 
 dependencies {
-    implementation 'org.springframework.boot:spring-boot-starter-web'  // Dépendance pour Spring Web
-    testImplementation 'org.springframework.boot:spring-boot-starter-test'  // Dépendance pour les tests Spring
-    testImplementation 'org.junit.jupiter:junit-jupiter:5.8.1'  // Dépendance pour JUnit 5
+    implementation 'org.springframework.boot:spring-boot-starter-web'
+    testImplementation 'org.springframework.boot:spring-boot-starter-test'
+    testImplementation 'org.junit.jupiter:junit-jupiter:5.8.1'
 }
-
 
 tasks.named('test') {
-	useJUnitPlatform()
+    useJUnitPlatform()
 }
 
-// Configuration de la vérification de la couverture de tests JaCoCo
+// JaCoCo configuration
 jacocoTestCoverageVerification {
-violationRules {
-rule {
-limit {
-minimum = 0.2 // Définit le seuil minimum de couverture à 20 %
-}
-}
-}
+    violationRules {
+        rule {
+            limit {
+                minimum = 0.2
+            }
+        }
+    }
 }
 
-// Assure que la vérification de la couverture est exécutée après les tests
 check.dependsOn jacocoTestCoverageVerification
+
+// Checkstyle configuration
+checkstyle {
+    toolVersion = '10.2' // Specify Checkstyle version
+    configFile = file("$rootDir/config/checkstyle/checkstyle.xml") // Point to your Checkstyle config file
+}
+
+// Ensure the 'check' task runs Checkstyle
+check.dependsOn 'checkstyleMain'
+
