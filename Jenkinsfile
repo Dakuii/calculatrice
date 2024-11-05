@@ -2,10 +2,9 @@ pipeline {
     agent any
     
     triggers {
-    	pollSCM('*****')
+        pollSCM('H/5 * * * *') // Polls every 5 minutes
     }
     stages {
-       
         stage("Compilation") {
             steps {
                 sh "./gradlew compileJava"
@@ -31,16 +30,15 @@ pipeline {
         }
         
         stage("Analyse statique du code") {
-	      steps {
-		   sh "./gradlew checkstyleMain"
-		   publishHTML (target: [
-		   reportDir: 'build/reports/checkstyle/',
-		   reportFiles: 'main.html',
-		   reportName: "Checkstyle Report"
-					])
-		   }
-        	}
-        	
-        	
+            steps {
+                sh "./gradlew checkstyleMain"
+                publishHTML(target: [
+                    reportDir: 'build/reports/checkstyle/',
+                    reportFiles: 'main.html',
+                    reportName: "Checkstyle Report"
+                ])
+            }
+        }
     }
 }
+
